@@ -72,6 +72,8 @@ function toMainMenu() {
 
 var questions;
 
+var firstQuestion = false;
+
 function startQuiz() {
 
 
@@ -86,7 +88,8 @@ function startQuiz() {
             question.answers = question.incorrect_answers;
             question.answers.push(question.correct_answer);
         });
-        console.log(questions);
+
+        firstQuestion = true;
         createList();
         showQuestion();
 
@@ -100,11 +103,11 @@ var listElement;
 
 function createList() {
     listOfAnswers = document.createElement('ul');
+    listOfAnswers.setAttribute('id', 'answers-list');
     quizAnswers.appendChild(listOfAnswers);
     for (i = 0; i < questions[currentQuestion].answers.length; i++) {
         listElement = document.createElement('li');
         // answer.addEventListener('click', selectedAnswer);
-        listElement.setAttribute('id', i);
         listOfAnswers.appendChild(listElement);
     }
 }
@@ -113,27 +116,38 @@ function destroyList() {
     listOfAnswers.parentNode.removeChild(listOfAnswers);
 }
 
-var firstQuestion = true;
+function convert(str) {
+    str = str.replace(/&amp;/g, "&");
+    str = str.replace(/&gt;/g, ">");
+    str = str.replace(/&lt;/g, "<");
+    str = str.replace(/&quot;/g, '"');
+    str = str.replace(/&#039;/g, "'");
+    str = str.replace(/&Uuml;/g, "u");
+    return str;
+}
+
+
 
 function showQuestion() {
 
     if (currentQuestion >= questions.length) return;
-
+    
     if (!firstQuestion) {
         destroyList();
         createList();
     }
-
-    console.log(questions[currentQuestion].question);
-    quizQuestion.textContent = questions[currentQuestion].question.replace(/(&quot\;)/g, "\"");
+    var strQuestion = questions[currentQuestion].question;
+    quizQuestion.textContent = convert(strQuestion);
+    var listAnswers = document.getElementById('answers-list').children;
 
     for (i = 0; i < questions[currentQuestion].answers.length; i++) {
-
-        let answer = document.getElementById(i);
-        answer.textContent = questions[currentQuestion].answers[i];
+        let answer = listAnswers[i];
+        let strAnswer = questions[currentQuestion].answers[i];
+        answer.textContent = convert(strAnswer);
     }
 
     if (currentQuestion == questions.length - 1) {
+        quizButton.addEventListener('click', finishQuiz);
         quizButton.textContent = 'Finish';
     } else {
         quizButton.textContent = 'Next';
@@ -141,5 +155,11 @@ function showQuestion() {
 
     currentQuestion++;
     firstQuestion = false;
+}
+
+function finishQuiz() {
+    quizButton.removeEventListener('click', finishQuiz);
+    
+
 }
 
