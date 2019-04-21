@@ -39,6 +39,9 @@
             <button class="big-btn" id="start-quiz-btn">
                 Start
             </button>
+            <button class="big-btn" id="logout-quiz-btn">
+                Logout
+            </button>
         </div>
     </section>
 
@@ -46,7 +49,7 @@
 
 
     <!-- QUIZ -->
-    <div id="quiz-container" class="container">
+    <section id="quiz-container" class="container">
         <div class="quiz-wrapper">
 
             <div id="quiz-question-section">
@@ -59,10 +62,61 @@
             </button>
 
         </div>
-
-    </div>
-
+    </section>
     <!-- END OF QUIZ -->
+
+    <!-- RESULT PAGE -->
+    <section id="result-page-container" class="container">
+        <div class="result-page-wrapper">
+
+            <div id="result-page-section">
+                <h1 class="big-text">Your result is:</h1>
+                <div>
+                    <h1 id="quiz-result">
+
+                    </h1>
+                </div>
+            </div>
+
+            <div id="result-page-buttons">
+                <button class="back-button" id="play-again-btn">
+                    Play Again
+                </button>
+                <button class="back-button" id="back-main-menu-btn">
+                    Main Menu
+                </button>
+            </div>
+
+        </div>
+    </section>
+    <!-- END OF RESULT PAGE -->
+
+    <!-- HIGHSCORES -->
+    <section id="highscores-container" class="container">
+        <div class="highscores-wrapper">
+            <div class="highscores-heading big-text">
+                Highscores
+            </div>
+            <div class="highscores-inner-content">
+                <div id="highscores-usernames-wrapper">
+                    <ul id="highscores-usernames">
+
+                    </ul>
+                </div>
+                <div id="highscores-scores-wrapper">
+                    <ul id="highscores-scores">
+
+                    </ul>
+                </div>
+            </div>
+            <button class="back-button" id="high-main-menu-btn">
+                Main Menu
+            </button>
+        </div>
+    </section>
+    <!-- END OF THE HIGHSCORES -->
+
+
 
     <script src="js/script.js"></script>
 </body>
