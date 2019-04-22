@@ -276,6 +276,19 @@ div.highscores-inner-content ul li {
     margin: 10px;
 }
 
+/* ERROR PAGE */
+
+div.error-page-wrapper {
+    width: 70%;
+    height: 90vh;
+    margin: auto;
+    position: relative;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /* SCROLLBAR */
 
 /* width */

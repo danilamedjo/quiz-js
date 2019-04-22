@@ -8,6 +8,8 @@ class GetData {
             xml.onreadystatechange = function () {
                 if (xml.status == 200 && xml.readyState == 4) {
                     resolve(JSON.parse(xml.responseText));
+                } else if (xml.status < 200 || xml.status > 400 && xml.readyState == 4) {
+                    reject(new Error('Something went wrong, please reload the page'));
                 }
             }
             xml.send();
@@ -30,6 +32,8 @@ const quizResult = document.getElementById('quiz-result');
 const highscoresPage = document.getElementById('highscores-container');
 const highscoresUsernamesWrapper = document.getElementById('highscores-usernames-wrapper');
 const highscoresScoresWrapper = document.getElementById('highscores-scores-wrapper');
+const errorMessage = document.getElementById('error-message');
+const errorPage = document.getElementById('error-page-container');
 
 // BUTTONS
 
@@ -57,7 +61,6 @@ var points;
 var highscores = [];
 var correctAnswer;
 var highscoreListCreated = false;
-// var highscoreListDeleted = true;
 
 class Highscore {
     constructor(points, questionLenght) {
@@ -179,6 +182,13 @@ function logout() {
 
 }
 
+function showErrorPage(error) {
+    landingPage.style.display = 'none';
+    quizPage.style.display = 'none';
+    errorPage.style.display = 'block';
+    errorMessage.textContent = error.message;
+}
+
 function startQuiz() {
 
     let questionsPromise = GetData.go('https://opentdb.com/api.php?amount=5&type=multiple');
@@ -186,22 +196,31 @@ function startQuiz() {
     resultPage.style.display = 'none';
     mainPage.style.display = 'none';
     highscoresPage.style.display = 'none';
-    quizPage.style.display = 'block';
     quizResult.textContent = null;
+    quizPage.style.display = 'block';
 
-    questionsPromise.then(function (res) {
-        questions = res.results;
-        questions.forEach(question => {
-            question.answers = question.incorrect_answers;
-            question.answers.push(question.correct_answer);
-            question.answers.sort();
-        });
+    questionsPromise.then(
+        result => {
+            questions = result.results;
+            questions.forEach(question => {
+                question.answers = question.incorrect_answers;
+                question.answers.push(question.correct_answer);
+                question.answers.sort();
+            });
 
-        firstQuestion = true;
-        createList();
-        showQuestion();
-        points = 0;
-    })
+            firstQuestion = true;
+            createList();
+            showQuestion();
+            points = 0;
+        },
+        error => {
+            showErrorPage(error);
+        })
+
+    
+
+
+
     quizButton.addEventListener('click', nextQuestion);
 }
 
@@ -317,6 +336,7 @@ function finishQuiz() {
     quizPage.style.display = 'none';
     resultPage.style.display = 'none';
     highscoresPage.style.display = 'none';
+    errorPage.style.display = 'none';
     mainMenuBtn.addEventListener('click', toMainMenu);
     highscoresBtn.addEventListener('click', showHighscores);
     logoutBtn.addEventListener('click', logout);
@@ -325,4 +345,5 @@ function finishQuiz() {
     if (!highscoresLocalStorage.getHighscores()) {
         highscoresLocalStorage.setHighscores(highscores);
     }
+
 })();
