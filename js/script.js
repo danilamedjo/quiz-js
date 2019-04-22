@@ -28,8 +28,8 @@ const resultPage = document.getElementById('result-page-container');
 const resultSection = document.getElementById("result-page-section");
 const quizResult = document.getElementById('quiz-result');
 const highscoresPage = document.getElementById('highscores-container');
-const highscoresUsernames = document.getElementById('highscores-usernames');
-const highscoresScores = document.getElementById('highscores-scores');
+const highscoresUsernamesWrapper = document.getElementById('highscores-usernames-wrapper');
+const highscoresScoresWrapper = document.getElementById('highscores-scores-wrapper');
 
 // BUTTONS
 
@@ -46,6 +46,8 @@ const highMainMenuBtn = document.getElementById('high-main-menu-btn');
 var currentQuestion = 0;
 var listOfAnswers;
 var listElement;
+var highscoresUsernames;
+var highscoresScores;
 var selectedAnswer;
 var playingAgain = false;
 var username = null;
@@ -54,6 +56,8 @@ var firstQuestion = false;
 var points;
 var highscores = [];
 var correctAnswer;
+var highscoreListCreated = false;
+// var highscoreListDeleted = true;
 
 class Highscore {
     constructor(points, questionLenght) {
@@ -101,10 +105,19 @@ function showHighscores() {
     resultPage.style.display = 'none';
     highscoresPage.style.display = 'block';
 
+    highscoresUsernames = document.createElement('ul');
+    highscoresUsernames.setAttribute('id', 'highscores-usernames');
+
+    highscoresScores = document.createElement('ul');
+    highscoresScores.setAttribute('id', 'highscores-scores');
+
+    highscoresUsernamesWrapper.appendChild(highscoresUsernames);
+    highscoresScoresWrapper.appendChild(highscoresScores);
+
     highscores = highscoresLocalStorage.getHighscores();
     highscores.sort(function (a, b) {
         return b.points - a.points;
-      });
+    });
 
     highscores.forEach(highscore => {
 
@@ -120,6 +133,15 @@ function showHighscores() {
         scoresListElement.textContent = resultStr;
 
     });
+    highscoreListCreated = true;
+    // highscoreListDeleted = false;
+}
+
+function destroyHighscoresList() {
+    highscoresUsernames.parentNode.removeChild(highscoresUsernames);
+    highscoresScores.parentNode.removeChild(highscoresScores);
+    // highscoreListDeleted = true;
+    highscoreListCreated = false;
 
 }
 
@@ -131,10 +153,17 @@ function toMainMenu() {
         userLocalStorage.setUser(username);
     }
 
+
     resultPage.style.display = 'none';
     landingPage.style.display = 'none';
     highscoresPage.style.display = 'none';
+
     mainPage.style.display = 'block';
+
+    if (highscoreListCreated) {
+        destroyHighscoresList();
+    }
+
 }
 
 function logout() {
@@ -195,7 +224,8 @@ function destroyList() {
 function checkAnswer() {
     if (selectedAnswer) return;
     selectedAnswer = this;
-    if (selectedAnswer.textContent === convert(questions[currentQuestion].correct_answer)) {
+    let correctAnswerStr = convert(questions[currentQuestion].correct_answer);
+    if (selectedAnswer.textContent === correctAnswerStr) {
         selectedAnswer.classList.add('correct-answer');
         points++;
     } else {
